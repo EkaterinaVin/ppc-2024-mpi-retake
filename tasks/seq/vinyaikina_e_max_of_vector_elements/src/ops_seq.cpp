@@ -1,42 +1,47 @@
-#include "seq/example/include/ops_seq.hpp"
+#include "seq/vinyaikina_e_max_of_vector_elements/include/ops_seq.hpp"
 
-#include <cmath>
-#include <cstddef>
-#include <vector>
+#include <limits>
 
-bool nesterov_a_test_task_seq::TestTaskSequential::PreProcessingImpl() {
-  // Init value for input and output
-  unsigned int input_size = task_data->inputs_count[0];
-  auto *in_ptr = reinterpret_cast<int *>(task_data->inputs[0]);
-  input_ = std::vector<int>(in_ptr, in_ptr + input_size);
+namespace vinyaikina_e_max_of_vector_elements_seq {
 
-  unsigned int output_size = task_data->outputs_count[0];
-  output_ = std::vector<int>(output_size, 0);
+bool VectorMaxSeq::validation() {
+  internal_order_test();
 
-  rc_size_ = static_cast<int>(std::sqrt(input_size));
+  return !taskData->outputs.empty() && taskData->outputs_count[0] == 1;
+}
+
+bool VectorMaxSeq::pre_processing() {
+  internal_order_test();
+
+  auto* input_ptr = reinterpret_cast<int32_t*>(taskData->inputs[0]);
+  input_.resize(taskData->inputs_count[0]);
+  std::copy(input_ptr, input_ptr + taskData->inputs_count[0], input_.begin());
+
   return true;
 }
 
-bool nesterov_a_test_task_seq::TestTaskSequential::ValidationImpl() {
-  // Check equality of counts elements
-  return task_data->inputs_count[0] == task_data->outputs_count[0];
-}
+bool VectorMaxSeq::run() {
+  internal_order_test();
 
-bool nesterov_a_test_task_seq::TestTaskSequential::RunImpl() {
-  // Multiply matrices
-  for (int i = 0; i < rc_size_; ++i) {
-    for (int j = 0; j < rc_size_; ++j) {
-      for (int k = 0; k < rc_size_; ++k) {
-        output_[(i * rc_size_) + j] += input_[(i * rc_size_) + k] * input_[(k * rc_size_) + j];
-      }
+  if (input_.empty()) {
+    return true;
+  }
+
+  max_ = input_[0];
+  for (int32_t num : input_) {
+    if (num > max_) {
+      max_ = num;
     }
   }
+
   return true;
 }
 
-bool nesterov_a_test_task_seq::TestTaskSequential::PostProcessingImpl() {
-  for (size_t i = 0; i < output_.size(); i++) {
-    reinterpret_cast<int *>(task_data->outputs[0])[i] = output_[i];
-  }
+bool VectorMaxSeq::post_processing() {
+  internal_order_test();
+
+  *reinterpret_cast<int32_t*>(taskData->outputs[0]) = max_;
   return true;
 }
+
+}  // namespace vinyaikina_e_max_of_vector_elements_seq

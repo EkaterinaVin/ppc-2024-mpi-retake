@@ -1,73 +1,139 @@
+
 #include <gtest/gtest.h>
 
-#include <cstddef>
-#include <cstdint>
-#include <fstream>
-#include <memory>
-#include <string>
+#include <limits>
+#include <random>
 #include <vector>
 
-#include "core/task/include/task.hpp"
-#include "core/util/include/util.hpp"
-#include "seq/example/include/ops_seq.hpp"
+#include "seq/vinyaikina_e_max_of_vector_elements/include/ops_seq.hpp"
 
-TEST(nesterov_a_test_task_seq, test_matmul_50) {
-  constexpr size_t kCount = 50;
+TEST(vinyaikina_e_max_of_vector_elements, regularVector) {
+  std::vector<int32_t> input = {1, 2, 3, -5, 3, 43};
+  int32_t expected = 43;
+  int32_t actual = std::numeric_limits<int32_t>::min();
 
-  // Create data
-  std::vector<int> in(kCount * kCount, 0);
-  std::vector<int> out(kCount * kCount, 0);
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.emplace_back(input.size());
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskData->outputs_count.emplace_back(1);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(&actual));
 
-  for (size_t i = 0; i < kCount; i++) {
-    in[(i * kCount) + i] = 1;
-  }
-
-  // Create task_data
-  auto task_data_seq = std::make_shared<ppc::core::TaskData>();
-  task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  task_data_seq->inputs_count.emplace_back(in.size());
-  task_data_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  task_data_seq->outputs_count.emplace_back(out.size());
-
-  // Create Task
-  nesterov_a_test_task_seq::TestTaskSequential test_task_sequential(task_data_seq);
-  ASSERT_EQ(test_task_sequential.Validation(), true);
-  test_task_sequential.PreProcessing();
-  test_task_sequential.Run();
-  test_task_sequential.PostProcessing();
-  EXPECT_EQ(in, out);
+  vinyaikina_e_max_of_vector_elements_seq::VectorMaxSeq vectorMaxSeq(taskData);
+  ASSERT_TRUE(vectorMaxSeq.validation());
+  vectorMaxSeq.pre_processing();
+  vectorMaxSeq.run();
+  vectorMaxSeq.post_processing();
+  ASSERT_EQ(expected, actual);
 }
 
-TEST(nesterov_a_test_task_seq, test_matmul_100_from_file) {
-  std::string line;
-  std::ifstream test_file(ppc::util::GetAbsolutePath("seq/example/data/test.txt"));
-  if (test_file.is_open()) {
-    getline(test_file, line);
-  }
-  test_file.close();
+TEST(vinyaikina_e_max_of_vector_elements, positiveNumbers) {
+  std::vector<int32_t> input = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+  int32_t expected = 10;
+  int32_t actual = std::numeric_limits<int32_t>::min();
 
-  const size_t count = std::stoi(line);
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.emplace_back(input.size());
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskData->outputs_count.emplace_back(1);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(&actual));
 
-  // Create data
-  std::vector<int> in(count * count, 0);
-  std::vector<int> out(count * count, 0);
+  vinyaikina_e_max_of_vector_elements_seq::VectorMaxSeq vectorMaxSeq(taskData);
+  ASSERT_TRUE(vectorMaxSeq.validation());
+  vectorMaxSeq.pre_processing();
+  vectorMaxSeq.run();
+  vectorMaxSeq.post_processing();
+  ASSERT_EQ(expected, actual);
+}
 
-  for (size_t i = 0; i < count; i++) {
-    in[(i * count) + i] = 1;
-  }
+TEST(vinyaikina_e_max_of_vector_elements, negativeNumbers) {
+  std::vector<int32_t> input = {-1, -2, -3, -4, -5, -6, -7, -8, -9, -10};
+  int32_t expected = -1;
+  int32_t actual = std::numeric_limits<int32_t>::min();
 
-  // Create task_data
-  auto task_data_seq = std::make_shared<ppc::core::TaskData>();
-  task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  task_data_seq->inputs_count.emplace_back(in.size());
-  task_data_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  task_data_seq->outputs_count.emplace_back(out.size());
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.emplace_back(input.size());
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskData->outputs_count.emplace_back(1);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(&actual));
 
-  // Create Task
-  nesterov_a_test_task_seq::TestTaskSequential test_task_sequential(task_data_seq);
-  ASSERT_EQ(test_task_sequential.Validation(), true);
-  test_task_sequential.PreProcessing();
-  test_task_sequential.Run();
-  test_task_sequential.PostProcessing();
-  EXPECT_EQ(in, out);
+  vinyaikina_e_max_of_vector_elements_seq::VectorMaxSeq vectorMaxSeq(taskData);
+  ASSERT_TRUE(vectorMaxSeq.validation());
+  vectorMaxSeq.pre_processing();
+  vectorMaxSeq.run();
+  vectorMaxSeq.post_processing();
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(vinyaikina_e_max_of_vector_elements, zeroVector) {
+  std::vector<int32_t> input = {0, 0, 0, 0};
+  int32_t expected = 0;
+  int32_t actual = std::numeric_limits<int32_t>::min();
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.emplace_back(input.size());
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskData->outputs_count.emplace_back(1);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(&actual));
+
+  vinyaikina_e_max_of_vector_elements_seq::VectorMaxSeq vectorMaxSeq(taskData);
+  ASSERT_TRUE(vectorMaxSeq.validation());
+  vectorMaxSeq.pre_processing();
+  vectorMaxSeq.run();
+  vectorMaxSeq.post_processing();
+  ASSERT_EQ(expected, actual);
+}
+
+TEST(vinyaikina_e_max_of_vector_elements, randomVector) {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> distrib(-1000, 1000);
+
+  std::vector<int32_t> input_vector(50000);
+  std::generate(input_vector.begin(), input_vector.end(), [&]() { return distrib(gen); });
+
+  int32_t expected_max = *std::max_element(input_vector.begin(), input_vector.end());
+
+  int32_t actual_max = std::numeric_limits<int32_t>::min();
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.emplace_back(input_vector.size());
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_vector.data()));
+  taskData->outputs_count.emplace_back(1);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(&actual_max));
+
+  vinyaikina_e_max_of_vector_elements_seq::VectorMaxSeq vectorMaxSeq(taskData);
+  ASSERT_TRUE(vectorMaxSeq.validation());
+  vectorMaxSeq.pre_processing();
+  vectorMaxSeq.run();
+  vectorMaxSeq.post_processing();
+
+  ASSERT_EQ(expected_max, actual_max);
+}
+
+TEST(vinyaikina_e_max_of_vector_elements, emptyVector) {
+  std::vector<int32_t> input = {};
+  int32_t actual = std::numeric_limits<int32_t>::min();
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.emplace_back(input.size());
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskData->outputs_count.emplace_back(1);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(&actual));
+
+  vinyaikina_e_max_of_vector_elements_seq::VectorMaxSeq vectorMaxSeq(taskData);
+  ASSERT_TRUE(vectorMaxSeq.validation());
+  vectorMaxSeq.pre_processing();
+  vectorMaxSeq.run();
+  vectorMaxSeq.post_processing();
+  ASSERT_EQ(std::numeric_limits<int32_t>::min(), actual);
+}
+
+TEST(vinyaikina_e_max_of_vector_elements, validationNotPassed) {
+  std::vector<int32_t> input = {1, 2, 3, -5};
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.emplace_back(input.size());
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+
+  vinyaikina_e_max_of_vector_elements_seq::VectorMaxSeq vectorMaxSeq(taskData);
+  ASSERT_FALSE(vectorMaxSeq.validation());
 }

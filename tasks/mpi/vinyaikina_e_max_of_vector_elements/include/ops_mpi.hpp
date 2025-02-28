@@ -1,26 +1,42 @@
+
 #pragma once
 
-#include <boost/mpi/collectives.hpp>
-#include <boost/mpi/communicator.hpp>
-#include <utility>
+#include <boost/mpi.hpp>
+#include <boost/serialization/vector.hpp>
+#include <limits>
 #include <vector>
 
 #include "core/task/include/task.hpp"
 
-namespace nesterov_a_test_task_mpi {
+namespace vinyaikina_e_max_of_vector_elements {
 
-class TestTaskMPI : public ppc::core::Task {
+[[nodiscard]] std::vector<int32_t> make_random_vector(int32_t size, int32_t val_min, int32_t val_max);
+
+class VectorMaxSeq : public ppc::core::Task {
  public:
-  explicit TestTaskMPI(ppc::core::TaskDataPtr task_data) : Task(std::move(task_data)) {}
-  bool PreProcessingImpl() override;
-  bool ValidationImpl() override;
-  bool RunImpl() override;
-  bool PostProcessingImpl() override;
+  explicit VectorMaxSeq(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  bool validation() override;
+  bool pre_processing() override;
+  bool run() override;
+  bool post_processing() override;
 
  private:
-  std::vector<int> input_, output_;
-  int rc_size_{};
-  boost::mpi::communicator world_;
+  std::vector<int32_t> input_;
+  int32_t max_ = std::numeric_limits<int32_t>::min();
 };
 
-}  // namespace nesterov_a_test_task_mpi
+class VectorMaxPar : public ppc::core::Task {
+ public:
+  explicit VectorMaxPar(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  bool validation() override;
+  bool pre_processing() override;
+  bool run() override;
+  bool post_processing() override;
+
+ private:
+  std::vector<int32_t> input_, local_input_;
+  int32_t max_ = std::numeric_limits<int32_t>::min();
+  boost::mpi::communicator world;
+};
+
+}  // namespace vinyaikina_e_max_of_vector_elements

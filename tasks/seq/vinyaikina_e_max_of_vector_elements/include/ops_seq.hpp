@@ -1,23 +1,24 @@
+
 #pragma once
 
-#include <utility>
+#include <limits>
 #include <vector>
 
 #include "core/task/include/task.hpp"
 
-namespace nesterov_a_test_task_seq {
+namespace vinyaikina_e_max_of_vector_elements_seq {
 
-class TestTaskSequential : public ppc::core::Task {
+class VectorMaxSeq : public ppc::core::Task {
  public:
-  explicit TestTaskSequential(ppc::core::TaskDataPtr task_data) : Task(std::move(task_data)) {}
-  bool PreProcessingImpl() override;
-  bool ValidationImpl() override;
-  bool RunImpl() override;
-  bool PostProcessingImpl() override;
+  explicit VectorMaxSeq(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  bool validation() override;
+  bool pre_processing() override;
+  bool run() override;
+  bool post_processing() override;
 
  private:
-  std::vector<int> input_, output_;
-  int rc_size_{};
+  std::vector<int32_t> input_;
+  int32_t max_ = std::numeric_limits<int32_t>::min();
 };
 
-}  // namespace nesterov_a_test_task_seq
+}  // namespace vinyaikina_e_max_of_vector_elements_seq

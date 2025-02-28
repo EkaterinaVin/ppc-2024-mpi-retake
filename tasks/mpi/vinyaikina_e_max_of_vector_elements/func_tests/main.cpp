@@ -1,75 +1,110 @@
 #include <gtest/gtest.h>
 
-#include <cstddef>
-#include <cstdint>
-#include <fstream>
-#include <memory>
-#include <string>
+#include <boost/mpi.hpp>
+#include <limits>
+#include <numeric>
 #include <vector>
 
-#include "core/task/include/task.hpp"
-#include "core/util/include/util.hpp"
-#include "mpi/example/include/ops_mpi.hpp"
+#include "mpi/vinyaikina_e_max_of_vector_elements/include/ops_mpi.hpp"
 
-TEST(nesterov_a_test_task_mpi, test_matmul_50) {
-  constexpr size_t kCount = 50;
+void run_parallel_and_sequential_tasks(std::vector<int32_t>& input_vector, int32_t expected_max) {
+  boost::mpi::communicator world;
+  int32_t result_parallel = std::numeric_limits<int32_t>::min();
+  int32_t result_sequential = std::numeric_limits<int32_t>::min();
 
-  // Create data
-  std::vector<int> in(kCount * kCount, 0);
-  std::vector<int> out(kCount * kCount, 0);
-
-  for (size_t i = 0; i < kCount; i++) {
-    in[(i * kCount) + i] = 1;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_vector.data()));
+    taskDataPar->inputs_count.emplace_back(input_vector.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result_parallel));
+    taskDataPar->outputs_count.emplace_back(1);
   }
 
-  // Create task_data
-  auto task_data_mpi = std::make_shared<ppc::core::TaskData>();
-  task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  task_data_mpi->inputs_count.emplace_back(in.size());
-  task_data_mpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  task_data_mpi->outputs_count.emplace_back(out.size());
+  vinyaikina_e_max_of_vector_elements_mpi::VectorMaxPar testMpiTaskParallel(taskDataPar);
+  testMpiTaskParallel.validation();
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
 
-  // Create Task
-  nesterov_a_test_task_mpi::TestTaskMPI test_task_mpi(task_data_mpi);
-  ASSERT_EQ(test_task_mpi.Validation(), true);
-  test_task_mpi.PreProcessing();
-  test_task_mpi.Run();
-  test_task_mpi.PostProcessing();
+  if (world.rank() == 0) {
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_vector.data()));
+    taskDataSeq->inputs_count.emplace_back(input_vector.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result_sequential));
+    taskDataSeq->outputs_count.emplace_back(1);
 
-  EXPECT_EQ(in, out);
+    vinyaikina_e_max_of_vector_elements_mpi::VectorMaxSeq testMpiTaskSequential(taskDataSeq);
+    testMpiTaskSequential.validation();
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(result_sequential, result_parallel);
+    ASSERT_EQ(result_sequential, expected_max);
+  }
 }
 
-TEST(nesterov_a_test_task_mpi, test_matmul_100_from_file) {
-  std::string line;
-  std::ifstream test_file(ppc::util::GetAbsolutePath("mpi/example/data/test.txt"));
-  if (test_file.is_open()) {
-    getline(test_file, line);
-  }
-  test_file.close();
+TEST(vinyaikina_e_max_of_vector_elements_mpi, randomVector50000) {
+  boost::mpi::communicator world;
+  std::vector<int32_t> input_vector;
 
-  const size_t count = std::stoi(line);
-
-  // Create data
-  std::vector<int> in(count * count, 0);
-  std::vector<int> out(count * count, 0);
-
-  for (size_t i = 0; i < count; i++) {
-    in[(i * count) + i] = 1;
+  if (world.rank() == 0) {
+    input_vector = vinyaikina_e_max_of_vector_elements_mpi::make_random_vector(50000, -500, 5000);
   }
 
-  // Create task_data
-  auto task_data_mpi = std::make_shared<ppc::core::TaskData>();
-  task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  task_data_mpi->inputs_count.emplace_back(in.size());
-  task_data_mpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  task_data_mpi->outputs_count.emplace_back(out.size());
+  boost::mpi::broadcast(world, input_vector, 0);
 
-  // Create Task
-  nesterov_a_test_task_mpi::TestTaskMPI test_task_mpi(task_data_mpi);
-  ASSERT_EQ(test_task_mpi.Validation(), true);
-  test_task_mpi.PreProcessing();
-  test_task_mpi.Run();
-  test_task_mpi.PostProcessing();
+  int32_t expected_max = std::numeric_limits<int32_t>::min();
+  if (world.rank() == 0) {
+    expected_max = *std::max_element(input_vector.begin(), input_vector.end());
+  }
 
-  EXPECT_EQ(in, out);
+  run_parallel_and_sequential_tasks(input_vector, expected_max);
+}
+
+TEST(vinyaikina_e_max_of_vector_elements_mpi, regularVector) {
+  std::vector<int32_t> input_vector = {1, 2, 3, -5, 3, 43};
+  run_parallel_and_sequential_tasks(input_vector, 43);
+}
+
+TEST(vinyaikina_e_max_of_vector_elements_mpi, positiveNumbers) {
+  std::vector<int32_t> input_vector = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+  run_parallel_and_sequential_tasks(input_vector, 10);
+}
+
+TEST(vinyaikina_e_max_of_vector_elements_mpi, negativeNumbers) {
+  std::vector<int32_t> input_vector = {-1, -2, -3, -4, -5, -6, -7, -8, -9, -10};
+  run_parallel_and_sequential_tasks(input_vector, -1);
+}
+
+TEST(vinyaikina_e_max_of_vector_elements_mpi, zeroVector) {
+  std::vector<int32_t> input_vector = {0, 0, 0, 0, 0};
+  run_parallel_and_sequential_tasks(input_vector, 0);
+}
+
+TEST(vinyaikina_e_max_of_vector_elements_mpi, tinyVector) {
+  std::vector<int32_t> input_vector = {4, -20};
+  run_parallel_and_sequential_tasks(input_vector, 4);
+}
+
+TEST(vinyaikina_e_max_of_vector_elements_mpi, emptyVector) {
+  std::vector<int32_t> input_vector = {};
+  run_parallel_and_sequential_tasks(input_vector, std::numeric_limits<int32_t>::min());
+}
+
+TEST(vinyaikina_e_max_of_vector_elements_mpi, validationNotPassed) {
+  boost::mpi::communicator world;
+  std::vector<int32_t> input = {1, 2, 3, -5};
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskData->inputs_count.emplace_back(input.size());
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
+  }
+
+  vinyaikina_e_max_of_vector_elements_mpi::VectorMaxPar vectorMaxPar(taskData);
+
+  if (world.rank() == 0) {
+    ASSERT_FALSE(vectorMaxPar.validation());
+  }
 }
