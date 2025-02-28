@@ -2,26 +2,27 @@
 
 #include <limits>
 
+
 namespace vinyaikina_e_max_of_vector_elements_seq {
 
-bool VectorMaxSeq::validation() {
-  internal_order_test();
+bool VectorMaxSeq::ValidationImpl() {
+  
 
-  return !taskData->outputs.empty() && taskData->outputs_count[0] == 1;
+  return !task_data->outputs.empty() && task_data->outputs_count[0] == 1;
 }
 
-bool VectorMaxSeq::pre_processing() {
-  internal_order_test();
+bool VectorMaxSeq::PreProcessingImpl() {
+  
 
-  auto* input_ptr = reinterpret_cast<int32_t*>(taskData->inputs[0]);
-  input_.resize(taskData->inputs_count[0]);
-  std::copy(input_ptr, input_ptr + taskData->inputs_count[0], input_.begin());
+  auto* input_ptr = reinterpret_cast<int32_t*>(task_data->inputs[0]);
+  input_.resize(task_data->inputs_count[0]);
+  std::copy(input_ptr, input_ptr + task_data->inputs_count[0], input_.begin());
 
   return true;
 }
 
-bool VectorMaxSeq::run() {
-  internal_order_test();
+bool VectorMaxSeq::RunImpl() {
+  
 
   if (input_.empty()) {
     return true;
@@ -37,10 +38,10 @@ bool VectorMaxSeq::run() {
   return true;
 }
 
-bool VectorMaxSeq::post_processing() {
-  internal_order_test();
+bool VectorMaxSeq::PostProcessingImpl() {
+  
 
-  *reinterpret_cast<int32_t*>(taskData->outputs[0]) = max_;
+  *reinterpret_cast<int32_t*>(task_data->outputs[0]) = max_;
   return true;
 }
 

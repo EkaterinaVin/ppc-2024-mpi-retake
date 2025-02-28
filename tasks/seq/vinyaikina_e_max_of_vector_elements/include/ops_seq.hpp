@@ -3,6 +3,10 @@
 
 #include <limits>
 #include <vector>
+#include <memory> 
+#include <utility>
+#include <stdint.h>
+#include <algorithm>
 
 #include "core/task/include/task.hpp"
 
@@ -10,11 +14,11 @@ namespace vinyaikina_e_max_of_vector_elements_seq {
 
 class VectorMaxSeq : public ppc::core::Task {
  public:
-  explicit VectorMaxSeq(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-  bool validation() override;
-  bool pre_processing() override;
-  bool run() override;
-  bool post_processing() override;
+  explicit VectorMaxSeq(std::shared_ptr<ppc::core::TaskData> task_data) : Task(std::move(task_data)) {}
+  bool ValidationImpl() override;
+  bool PreProcessingImpl() override;
+  bool RunImpl() override;
+  bool PostProcessingImpl() override;
 
  private:
   std::vector<int32_t> input_;
