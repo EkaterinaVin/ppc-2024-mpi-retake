@@ -1,22 +1,22 @@
 
 #include <gtest/gtest.h>
 
-#include <limits>
-#include <random>
-#include <vector>
-#include <memory> 
-#include <utility>
-#include <stdint.h>
 #include <algorithm>
+#include <chrono>
+#include <cstddef>
+#include <cstdint>
+#include <limits>
+#include <memory>
+#include <vector>
 
 #include "seq/vinyaikina_e_max_of_vector_elements/include/ops_seq.hpp"
 
 TEST(vinyaikina_e_max_of_vector_elements, regularVector) {
-  std::ranges::vector<int32_t> input = {1, 2, 3, -5, 3, 43};
+  std::vector<int32_t> input = {1, 2, 3, -5, 3, 43};
   int32_t expected = 43;
   int32_t actual = std::numeric_limits<int32_t>::min();
 
-  std::shared_ptr<ppc::core::TaskData> task_data = std::make_shared<ppc::core::TaskData>();
+  auto task_data = std::make_shared<ppc::core::TaskData>();
   task_data->inputs_count.emplace_back(input.size());
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
   task_data->outputs_count.emplace_back(1);
@@ -35,7 +35,7 @@ TEST(vinyaikina_e_max_of_vector_elements, positiveNumbers) {
   int32_t expected = 10;
   int32_t actual = std::numeric_limits<int32_t>::min();
 
-  std::shared_ptr<ppc::core::TaskData> task_data = std::make_shared<ppc::core::TaskData>();
+  auto task_data = std::make_shared<ppc::core::TaskData>();
   task_data->inputs_count.emplace_back(input.size());
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
   task_data->outputs_count.emplace_back(1);
@@ -54,7 +54,7 @@ TEST(vinyaikina_e_max_of_vector_elements, negativeNumbers) {
   int32_t expected = -1;
   int32_t actual = std::numeric_limits<int32_t>::min();
 
-  std::shared_ptr<ppc::core::TaskData> task_data = std::make_shared<ppc::core::TaskData>();
+  auto task_data = std::make_shared<ppc::core::TaskData>();
   task_data->inputs_count.emplace_back(input.size());
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
   task_data->outputs_count.emplace_back(1);
@@ -73,7 +73,7 @@ TEST(vinyaikina_e_max_of_vector_elements, zeroVector) {
   int32_t expected = 0;
   int32_t actual = std::numeric_limits<int32_t>::min();
 
-  std::shared_ptr<ppc::core::TaskData> task_data = std::make_shared<ppc::core::TaskData>();
+  auto task_data = std::make_shared<ppc::core::TaskData>();
   task_data->inputs_count.emplace_back(input.size());
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
   task_data->outputs_count.emplace_back(1);
@@ -117,7 +117,7 @@ TEST(vinyaikina_e_max_of_vector_elements, emptyVector) {
   std::vector<int32_t> input = {};
   int32_t actual = std::numeric_limits<int32_t>::min();
 
-  std::shared_ptr<ppc::core::TaskData> task_data = std::make_shared<ppc::core::TaskData>();
+  auto task_data = std::make_shared<ppc::core::TaskData>();
   task_data->inputs_count.emplace_back(input.size());
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
   task_data->outputs_count.emplace_back(1);
@@ -134,7 +134,7 @@ TEST(vinyaikina_e_max_of_vector_elements, emptyVector) {
 TEST(vinyaikina_e_max_of_vector_elements, validationNotPassed) {
   std::vector<int32_t> input = {1, 2, 3, -5};
 
-  std::shared_ptr<ppc::core::TaskData> task_data = std::make_shared<ppc::core::TaskData>();
+  auto task_data = std::make_shared<ppc::core::TaskData>();
   task_data->inputs_count.emplace_back(input.size());
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
 

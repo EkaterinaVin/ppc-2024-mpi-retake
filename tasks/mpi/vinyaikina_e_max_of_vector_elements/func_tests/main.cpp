@@ -5,15 +5,16 @@
 #include <cstdint>
 #include <limits>
 #include <memory>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 
-void static RunParallelAndSequentialTasks(std::vector<int32_t>& input_vector, int32_t expected_max) {
+void RunParallelAndSequentialTasks(std::vector<int32_t>& input_vector, int32_t expected_max) {
   boost::mpi::communicator world;
   int32_t result_parallel = std::numeric_limits<int32_t>::min();
   int32_t result_sequential = std::numeric_limits<int32_t>::min();
 
-  std::shared_ptr<ppc::core::TaskData> task_data_par = std::make_shared<ppc::core::TaskData>();
+  auto std::shared_ptr<ppc::core::TaskData> task_data_par = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     task_data_par->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_vector.data()));
     task_data_par->inputs_count.emplace_back(input_vector.size());
@@ -28,7 +29,7 @@ void static RunParallelAndSequentialTasks(std::vector<int32_t>& input_vector, in
   test_mpi_task_parallel.PostProcessingImpl();
 
   if (world.rank() == 0) {
-    std::shared_ptr<ppc::core::TaskData> task_data_seq = std::make_shared<ppc::core::TaskData>();
+    auto task_data_seq = std::make_shared<ppc::core::TaskData>();
     task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_vector.data()));
     task_data_seq->inputs_count.emplace_back(input_vector.size());
     task_data_seq->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result_sequential));
@@ -56,7 +57,7 @@ TEST(vinyaikina_e_max_of_vector_elements, randomVector50000) {
   boost::mpi::broadcast(world, input_vector, 0);
 
   int32_t expected_max = 0;
-  expected_max = std::ranges::numeric_limits<int32_t>::min();
+  expected_max = std::numeric_limits<int32_t>::min();
   if (world.rank() == 0) {
     expected_max = *std::max_element(input_vector.begin(), input_vector.end());
   }
@@ -97,7 +98,7 @@ TEST(vinyaikina_e_max_of_vector_elements, emptyVector) {
 TEST(vinyaikina_e_max_of_vector_elements, validationNotPassed) {
   boost::mpi::communicator world;
   std::vector<int32_t> input = {1, 2, 3, -5};
-  std::shared_ptr<ppc::core::TaskData> task_data = std::make_shared<ppc::core::TaskData>();
+  auto task_data = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
     task_data->inputs_count.emplace_back(input.size());

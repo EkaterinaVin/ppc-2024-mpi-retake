@@ -5,11 +5,8 @@
 #include <boost/mpi.hpp>
 #include <boost/mpi/collectives/broadcast.hpp>
 #include <cstdint>
-#include <limits>
 #include <random>
 #include <vector>
-
-namespace vinyaikina_e_max_of_vector_elements {
 
 std::vector<int32_t> MakeRandomVector(int32_t size, int32_t val_min, int32_t val_max) {
   std::random_device rd;
@@ -22,16 +19,18 @@ std::vector<int32_t> MakeRandomVector(int32_t size, int32_t val_min, int32_t val
 }
 
 // Sequential Version
-bool VectorMaxSeq::ValidationImpl() { return !task_data->outputs.empty() && task_data->outputs_count[0] == 1; }
+bool vinyaikina_e_max_of_vector_elements::VectorMaxSeq::ValidationImpl() {
+  return !task_data->outputs.empty() && task_data->outputs_count[0] == 1;
+}
 
-bool VectorMaxSeq::PreProcessingImpl() {
+bool vinyaikina_e_max_of_vector_elements::VectorMaxSeq::PreProcessingImpl() {
   auto* input_ptr = reinterpret_cast<int32_t*>(task_data->inputs[0]);
   input_.resize(task_data->inputs_count[0]);
   std::copy(input_ptr, input_ptr + task_data->inputs_count[0], input_.begin());
   return true;
 }
 
-bool VectorMaxSeq::RunImpl() {
+bool vinyaikina_e_max_of_vector_elements::VectorMaxSeq::RunImpl() {
   if (input_.empty()) {
     return true;
   }
@@ -41,20 +40,22 @@ bool VectorMaxSeq::RunImpl() {
     return true;
   }
 
-  bool VectorMaxSeq::PostProcessingImpl() {
+  bool vinyaikina_e_max_of_vector_elements::VectorMaxSeq::PostProcessingImpl() {
     *reinterpret_cast<int32_t*>(task_data->outputs[0]) = max_;
     return true;
   }
 
   // Parallel Version
-  bool VectorMaxPar::ValidationImpl() { return !task_data->outputs.empty() && task_data->outputs_count[0] == 1; }
+  bool vinyaikina_e_max_of_vector_elements::VectorMaxPar::ValidationImpl() {
+    return !task_data->outputs.empty() && task_data->outputs_count[0] == 1;
+  }
 
   bool VectorMaxPar::PreProcessingImpl() {
     max_ = std::numeric_limits<int32_t>::min();
     return true;
   }
 
-  bool VectorMaxPar::RunImpl() {
+  bool vinyaikina_e_max_of_vector_elements::VectorMaxPar::RunImpl() {
     int my_rank = world_.rank();
     int world_size = world_.size();
     int total_size = 0;
@@ -92,11 +93,9 @@ bool VectorMaxSeq::RunImpl() {
     return true;
   }
 
-  bool VectorMaxPar::PostProcessingImpl() {
+  bool vinyaikina_e_max_of_vector_elements::VectorMaxPar::PostProcessingImpl() {
     if (world_.rank() == 0) {
       *reinterpret_cast<int32_t*>(task_data->outputs[0]) = max_;
     }
     return true;
   }
-
-}  // namespace vinyaikina_e_max_of_vector_elements

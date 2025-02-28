@@ -2,6 +2,8 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi.hpp>
+#include <chrono>
+#include <cstddef>
 #include <cstdint>
 #include <limits>
 #include <memory>
@@ -14,7 +16,7 @@ TEST(vinyaikina_e_max_of_vector_elements_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int32_t> input_vector;
   int32_t result_parallel = std::numeric_limits<int32_t>::min();
-  std::shared_ptr<ppc::core::TaskData> task_data_par = std::make_shared<ppc::core::TaskData>();
+  auto task_data_par = std::make_shared<ppc::core::TaskData>();
   int vector_size = 50000000;
 
   if (world.rank() == 0) {
@@ -47,7 +49,7 @@ TEST(vinyaikina_e_max_of_vector_elements_mpi, test_task_run) {
   boost::mpi::communicator world;
   std::vector<int32_t> input_vector;
   int32_t result_parallel = std::numeric_limits<int32_t>::min();
-  std::shared_ptr<ppc::core::TaskData> task_data_par = std::make_shared<ppc::core::TaskData>();
+  auto std::shared_ptr<ppc::core::TaskData> task_data_par = std::make_shared<ppc::core::TaskData>();
   int vector_size = 50000000;
 
   if (world.rank() == 0) {

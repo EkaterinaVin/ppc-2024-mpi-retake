@@ -1,10 +1,8 @@
 
 #pragma once
 
-#include <stdint.h>
-
 #include <algorithm>
-#include <limits>
+#include <cstdint>
 #include <memory>
 #include <utility>
 #include <vector>
