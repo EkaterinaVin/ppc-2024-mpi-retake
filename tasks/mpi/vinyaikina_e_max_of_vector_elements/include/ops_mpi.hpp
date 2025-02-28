@@ -1,12 +1,12 @@
 
 #pragma once
 
-#include <limits>
-#include <vector>
+#include <boost/mpi/communicator.hpp>
 #include <cstdint>
+#include <limits>
 #include <memory>
 #include <utility>
-#include <boost/mpi/communicator.hpp>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 

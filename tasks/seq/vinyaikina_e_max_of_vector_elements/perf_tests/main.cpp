@@ -21,20 +21,20 @@ TEST(vinyaikina_e_max_of_vector_elements_seq, test_pipeline_run) {
 
   auto vectorMaxSequential = std::make_shared<vinyaikina_e_max_of_vector_elements_seq::VectorMaxSeq>(taskDataSeq);
 
-  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
+  auto perf_attr = std::make_shared<ppc::core::PerfAttr>();
+  perf_attr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
-  perfAttr->current_timer = [&] {
+  perf_attr->current_timer = [&] {
     auto current_time_point = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
     return static_cast<double>(duration) * 1e-9;
   };
 
-  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  auto perf_results = std::make_shared<ppc::core::PerfResults>();
 
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(vectorMaxSequential);
-  perfAnalyzer->pipeline_run(perfAttr, perfResults);
-  ppc::core::Perf::print_perf_statistic(perfResults);
+  auto perf_analyzer = std::make_shared<ppc::core::Perf>(vectorMaxSequential);
+  perf_analyzer->pipeline_run(perf_attr, perf_results);
+  ppc::core::Perf::print_perf_statistic(perf_results);
 
   ASSERT_EQ(expected_max, actual_max);
 }
@@ -54,20 +54,20 @@ TEST(vinyaikina_e_max_of_vector_elements_seq, first_negative) {
 
   auto vectorMaxSequential = std::make_shared<vinyaikina_e_max_of_vector_elements_seq::VectorMaxSeq>(taskDataSeq);
 
-  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
+  auto perf_attr = std::make_shared<ppc::core::PerfAttr>();
+  perf_attr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
-  perfAttr->current_timer = [&] {
+  perf_attr->current_timer = [&] {
     auto current_time_point = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
     return static_cast<double>(duration) * 1e-9;
   };
 
-  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  auto perf_results = std::make_shared<ppc::core::PerfResults>();
 
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(vectorMaxSequential);
-  perfAnalyzer->task_run(perfAttr, perfResults);
-  ppc::core::Perf::print_perf_statistic(perfResults);
+  auto perf_analyzer = std::make_shared<ppc::core::Perf>(vectorMaxSequential);
+  perf_analyzer->task_run(perf_attr, perf_results);
+  ppc::core::Perf::print_perf_statistic(perf_results);
 
   ASSERT_EQ(expected_max, actual_max);
 }

@@ -1,17 +1,14 @@
 #include <gtest/gtest.h>
 
-#include <limits>
-#include <vector>
-#include <cstdint>
+#include <algorithm>
 #include <boost/mpi/communicator.hpp>
-#include <boost/mpi/broadcast.hpp>
-#include <boost/mpi/timer.hpp>
-#include <memory> 
-#include <algorithm> 
+#include <cstdint>
+#include <limits>
+#include <memory>
 
 #include "core/task/include/task.hpp"
 
-void static run_parallel_and_sequential_tasks(std::vector<int32_t>& input_vector, int32_t expected_max) {
+void static RunParallelAndSequentialTasks(std::vector<int32_t>& input_vector, int32_t expected_max) {
   boost::mpi::communicator world;
   int32_t result_parallel = std::numeric_limits<int32_t>::min();
   int32_t result_sequential = std::numeric_limits<int32_t>::min();
@@ -58,42 +55,43 @@ TEST(vinyaikina_e_max_of_vector_elements, randomVector50000) {
 
   boost::mpi::broadcast(world, input_vector, 0);
 
-  int32_t expected_max = std::ranges::numeric_limits<int32_t>::min();
+  int32_t expected_max = 0;
+  expected_max = std::ranges::numeric_limits<int32_t>::min();
   if (world.rank() == 0) {
     expected_max = *std::max_element(input_vector.begin(), input_vector.end());
   }
 
-  run_parallel_and_sequential_tasks(input_vector, expected_max);
+  RunParallelAndSequentialTasks(input_vector, expected_max);
 }
 
 TEST(vinyaikina_e_max_of_vector_elements, regularVector) {
   std::vector<int32_t> input_vector = {1, 2, 3, -5, 3, 43};
-  run_parallel_and_sequential_tasks(input_vector, 43);
+  RunParallelAndSequentialTasks(input_vector, 43);
 }
 
 TEST(vinyaikina_e_max_of_vector_elements, positiveNumbers) {
   std::vector<int32_t> input_vector = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-  run_parallel_and_sequential_tasks(input_vector, 10);
+  RunParallelAndSequentialTasks(input_vector, 10);
 }
 
 TEST(vinyaikina_e_max_of_vector_elements, negativeNumbers) {
   std::vector<int32_t> input_vector = {-1, -2, -3, -4, -5, -6, -7, -8, -9, -10};
-  run_parallel_and_sequential_tasks(input_vector, -1);
+  RunParallelAndSequentialTasks(input_vector, -1);
 }
 
 TEST(vinyaikina_e_max_of_vector_elements, zeroVector) {
   std::vector<int32_t> input_vector = {0, 0, 0, 0, 0};
-  run_parallel_and_sequential_tasks(input_vector, 0);
+  RunParallelAndSequentialTasks(input_vector, 0);
 }
 
 TEST(vinyaikina_e_max_of_vector_elements, tinyVector) {
   std::vector<int32_t> input_vector = {4, -20};
-  run_parallel_and_sequential_tasks(input_vector, 4);
+  RunParallelAndSequentialTasks(input_vector, 4);
 }
 
 TEST(vinyaikina_e_max_of_vector_elements, emptyVector) {
   std::vector<int32_t> input_vector = {};
-  run_parallel_and_sequential_tasks(input_vector, std::numeric_limits<int32_t>::min());
+  RunParallelAndSequentialTasks(input_vector, std::numeric_limits<int32_t>::min());
 }
 
 TEST(vinyaikina_e_max_of_vector_elements, validationNotPassed) {

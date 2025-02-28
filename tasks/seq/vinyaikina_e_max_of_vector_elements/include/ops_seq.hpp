@@ -1,12 +1,13 @@
 
 #pragma once
 
-#include <limits>
-#include <vector>
-#include <memory> 
-#include <utility>
 #include <stdint.h>
+
 #include <algorithm>
+#include <limits>
+#include <memory>
+#include <utility>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 
