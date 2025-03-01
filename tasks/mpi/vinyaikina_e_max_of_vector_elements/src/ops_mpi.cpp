@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <boost/mpi.hpp>
 #include <boost/mpi/collectives/broadcast.hpp>
+#include <cmath>
+#include <cstddef>
 #include <cstdint>
 #include <random>
 #include <vector>
@@ -39,6 +41,7 @@ bool vinyaikina_e_max_of_vector_elements::VectorMaxSeq::RunImpl() {
     max_ = std::max(num, max_);
     return true;
   }
+  return true;
 }
 
 bool vinyaikina_e_max_of_vector_elements::VectorMaxSeq::PostProcessingImpl() {
@@ -51,7 +54,7 @@ bool vinyaikina_e_max_of_vector_elements::VectorMaxPar::ValidationImpl() {
   return !task_data->outputs.empty() && task_data->outputs_count[0] == 1;
 }
 
-bool VectorMaxPar::PreProcessingImpl() {
+bool vinyaikina_e_max_of_vector_elements::VectorMaxPar::PreProcessingImpl() {
   max_ = std::numeric_limits<int32_t>::min();
   return true;
 }
@@ -89,7 +92,7 @@ bool vinyaikina_e_max_of_vector_elements::VectorMaxPar::RunImpl() {
       local_max = num;
     }
   }
-  boost::mpi::reduce(world_, local_max, max_, fmaximum<int32_t>(), 0);
+  boost::mpi::reduce(world_, local_max, max_, std::max<int32_t>(), 0);
 
   return true;
 }
