@@ -8,13 +8,15 @@
 #include <vector>
 
 #include "core/task/include/task.hpp"
+#include "core/util/include/util.hpp"
+#include "mpi/vinyaikina_e_max_of_vector_elements/include/ops_mpi.hpp"
 
 void RunParallelAndSequentialTasks(std::vector<int32_t>& input_vector, int32_t expected_max) {
   boost::mpi::communicator world;
   int32_t result_parallel = std::numeric_limits<int32_t>::min();
   int32_t result_sequential = std::numeric_limits<int32_t>::min();
 
-  auto std::shared_ptr<ppc::core::TaskData> task_data_par = std::make_shared<ppc::core::TaskData>();
+  auto task_data_par = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     task_data_par->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_vector.data()));
     task_data_par->inputs_count.emplace_back(input_vector.size());

@@ -36,11 +36,12 @@ TEST(vinyaikina_e_max_of_vector_elements_mpi, test_pipeline_run) {
   perf_attr->current_timer = [&] { return current_timer.elapsed(); };
   auto perf_results = std::make_shared<ppc::core::PerfResults>();
   auto perf_analyzer = std::make_shared<ppc::core::Perf>(test_mpi_task_parallel);
+  auto perf_analyzer = std::make_shared<ppc::core::Perf>(test_task_mpi);
 
-  perf_analyzer->pipeline_run(perf_attr, perf_results);
+  perf_analyzer->PipelineRun(perf_attr, perf_results);
 
   if (world.rank() == 0) {
-    ppc::core::Perf::print_perf_statistic(perf_results);
+    ppc::core::Perf::PrintPerfStatistic(perf_results);
     ASSERT_EQ(10, result_parallel);
   }
 }
@@ -49,7 +50,7 @@ TEST(vinyaikina_e_max_of_vector_elements_mpi, test_task_run) {
   boost::mpi::communicator world;
   std::vector<int32_t> input_vector;
   int32_t result_parallel = std::numeric_limits<int32_t>::min();
-  auto std::shared_ptr<ppc::core::TaskData> task_data_par = std::make_shared<ppc::core::TaskData>();
+  auto task_data_par = std::make_shared<ppc::core::TaskData>();
   int vector_size = 50000000;
 
   if (world.rank() == 0) {
@@ -73,7 +74,7 @@ TEST(vinyaikina_e_max_of_vector_elements_mpi, test_task_run) {
   perf_analyzer->task_run(perf_attr, perf_results);
 
   if (world.rank() == 0) {
-    ppc::core::Perf::print_perf_statistic(perf_results);
+    ppc::core::Perf::PrintPerfStatistic(perf_results);
     ASSERT_EQ(1, result_parallel);
   }
 }

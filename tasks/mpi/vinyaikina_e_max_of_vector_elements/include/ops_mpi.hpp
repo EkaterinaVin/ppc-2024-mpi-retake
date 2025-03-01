@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <cstdint>
 #include <limits>
@@ -29,7 +30,7 @@ class VectorMaxSeq : public ppc::core::Task {
 
 class VectorMaxPar : public ppc::core::Task {
  public:
-  explicit VectorMaxPar(std::shared_ptr<ppc::core::TaskData> task_data) : Task(std::move(task_data)) {}
+  explicit VectorMaxPar(ppc::core::TaskData task_data) : Task(std::move(task_data)) {}
   bool ValidationImpl() override;
   bool PreProcessingImpl() override;
   bool RunImpl() override;
