@@ -93,7 +93,7 @@ bool vinyaikina_e_max_of_vector_elements::VectorMaxPar::RunImpl() {
       local_max = num;
     }
   }
-  boost::mpi::reduce(world_, local_max, max_, std::max<int32_t>(), 0);
+  boost::mpi::reduce(world_, local_max, max_, std::numeric_limits<int32_t>::max(), 0);
 
   return true;
 }
