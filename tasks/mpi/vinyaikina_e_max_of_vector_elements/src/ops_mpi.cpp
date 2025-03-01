@@ -10,7 +10,8 @@
 #include <random>
 #include <vector>
 
-std::vector<int32_t> MakeRandomVector(int32_t size, int32_t val_min, int32_t val_max) {
+std::vector<int32_t> vinyaikina_e_max_of_vector_elements::MakeRandomVector(int32_t size, int32_t val_min,
+                                                                           int32_t val_max) {
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_int_distribution<> distrib(val_min, val_max);

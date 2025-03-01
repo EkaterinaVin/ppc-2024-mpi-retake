@@ -13,7 +13,7 @@ namespace vinyaikina_e_max_of_vector_elements_seq {
 
 class VectorMaxSeq : public ppc::core::Task {
  public:
-  explicit VectorMaxSeq(std::shared_ptr<ppc::core::TaskData> task_data) : Task(std::move(task_data)) {}
+  explicit VectorMaxSeq(ppc::core::TaskDataPtr task_data) : Task(std::move(task_data)) {}
   bool ValidationImpl() override;
   bool PreProcessingImpl() override;
   bool RunImpl() override;
