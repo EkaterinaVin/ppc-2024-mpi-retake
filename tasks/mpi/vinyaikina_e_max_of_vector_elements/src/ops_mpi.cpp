@@ -89,11 +89,9 @@ bool vinyaikina_e_max_of_vector_elements::VectorMaxPar::RunImpl() {
 
   int32_t local_max = std::numeric_limits<int32_t>::min();
   for (int32_t num : local_input_) {
-    if (num > local_max) {
-      local_max = num;
-    }
+    local_max = std::max(num, local_max);
   }
-  boost::mpi::reduce(world_, local_max, max_, std::numeric_limits<int32_t>::max(), 0);
+  boost::mpi::reduce(world_, local_max, max_, std::max(), 0);
 
   return true;
 }

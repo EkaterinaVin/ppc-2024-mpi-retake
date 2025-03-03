@@ -2,8 +2,8 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi.hpp>
+#include <boost/mpi/communicator.hpp>
 #include <chrono>
-#include <cstddef>
 #include <cstdint>
 #include <limits>
 #include <memory>
@@ -28,7 +28,7 @@ TEST(vinyaikina_e_max_of_vector_elements_mpi, test_pipeline_run) {
     task_data_par->outputs_count.emplace_back(1);
   }
 
-  auto test_mpi_task_parallel = std::make_shared<vinyaikina_e_max_of_vector_elements_mpi::VectorMaxPar>(task_data_par);
+  auto test_mpi_task_parallel = std::make_shared<vinyaikina_e_max_of_vector_elements::VectorMaxPar>(task_data_par);
 
   auto perf_attr = std::make_shared<ppc::core::PerfAttr>();
   perf_attr->num_running = 10;
