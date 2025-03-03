@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <boost/mpi.hpp>
+#include <boost/mpi/collectives.hpp>
 #include <boost/mpi/collectives/broadcast.hpp>
 #include <boost/mpi/collectives/scatter.hpp>
 #include <cmath>
@@ -92,7 +93,7 @@ bool vinyaikina_e_max_of_vector_elements::VectorMaxPar::RunImpl() {
   for (int32_t num : local_input_) {
     local_max = std::max(num, local_max);
   }
-  boost::mpi::reduce(world, local_max, max_, boost::mpi::maximum<int32_t>(), 0);
+  boost::mpi::reduce(world_, local_max, max_, boost::mpi::maximum<int32_t>(), 0);
   return true;
 }
 

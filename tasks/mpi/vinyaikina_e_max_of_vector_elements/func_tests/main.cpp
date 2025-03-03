@@ -13,7 +13,7 @@
 #include "mpi/vinyaikina_e_max_of_vector_elements/include/ops_mpi.hpp"
 
 namespace {
-void static RunParallelAndSequentialTasks(std::vector<int32_t>& input_vector, int32_t expected_max) {
+void RunParallelAndSequentialTasks(std::vector<int32_t>& input_vector, int32_t expected_max) {
   boost::mpi::communicator world;
   int32_t result_parallel = std::numeric_limits<int32_t>::min();
   int32_t result_sequential = std::numeric_limits<int32_t>::min();

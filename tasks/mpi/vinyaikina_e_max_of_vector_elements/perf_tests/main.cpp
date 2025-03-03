@@ -36,7 +36,6 @@ TEST(vinyaikina_e_max_of_vector_elements_mpi, test_pipeline_run) {
   perf_attr->current_timer = [&] { return current_timer.elapsed(); };
   auto perf_results = std::make_shared<ppc::core::PerfResults>();
   auto perf_analyzer = std::make_shared<ppc::core::Perf>(test_mpi_task_parallel);
-  auto perf_analyzer = std::make_shared<ppc::core::Perf>(test_task_mpi);
 
   perf_analyzer->PipelineRun(perf_attr, perf_results);
 

@@ -1,5 +1,6 @@
 #include "seq/vinyaikina_e_max_of_vector_elements/include/ops_seq.hpp"
 
+#include <algorithm>
 #include <cstdint>
 #include <limits>
 #include <memory>
