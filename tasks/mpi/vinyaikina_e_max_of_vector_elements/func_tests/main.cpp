@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
+#include <boost/mpi/collectives/broadcast.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <cstdint>
 #include <limits>
@@ -11,7 +12,8 @@
 #include "core/util/include/util.hpp"
 #include "mpi/vinyaikina_e_max_of_vector_elements/include/ops_mpi.hpp"
 
-void RunParallelAndSequentialTasks(std::vector<int32_t>& input_vector, int32_t expected_max) {
+namespace {
+void static RunParallelAndSequentialTasks(std::vector<int32_t>& input_vector, int32_t expected_max) {
   boost::mpi::communicator world;
   int32_t result_parallel = std::numeric_limits<int32_t>::min();
   int32_t result_sequential = std::numeric_limits<int32_t>::min();
@@ -47,6 +49,7 @@ void RunParallelAndSequentialTasks(std::vector<int32_t>& input_vector, int32_t e
     ASSERT_EQ(result_sequential, expected_max);
   }
 }
+}  // namespace
 
 TEST(vinyaikina_e_max_of_vector_elements, randomVector50000) {
   boost::mpi::communicator world;
@@ -61,7 +64,7 @@ TEST(vinyaikina_e_max_of_vector_elements, randomVector50000) {
   int32_t expected_max = 0;
   expected_max = std::numeric_limits<int32_t>::min();
   if (world.rank() == 0) {
-    expected_max = *std::max_element(input_vector.begin(), input_vector.end());
+    expected_max = *std::ranges::max_element(input_vector.begin(), input_vector.end());
   }
 
   RunParallelAndSequentialTasks(input_vector, expected_max);

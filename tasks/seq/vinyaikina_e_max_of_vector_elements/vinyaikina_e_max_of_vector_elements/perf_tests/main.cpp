@@ -18,7 +18,7 @@ TEST(vinyaikina_e_max_of_vector_elements_seq, test_pipeline_run) {
   int32_t expected_max = 10;
   int32_t actual_max = std::numeric_limits<int32_t>::min();
 
-  std::shared_ptr<ppc::core::TaskData> task_data_seq = std::make_shared<ppc::core::TaskData>();
+  auto task_data_seq = std::make_shared<ppc::core::TaskData>();
   task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_data.data()));
   task_data_seq->inputs_count.emplace_back(input_data.size());
   task_data_seq->outputs.emplace_back(reinterpret_cast<uint8_t*>(&actual_max));
@@ -51,7 +51,7 @@ TEST(vinyaikina_e_max_of_vector_elements_seq, first_negative) {
   int32_t expected_max = 1;
   int32_t actual_max = std::numeric_limits<int32_t>::min();
 
-  std::shared_ptr<ppc::core::TaskData> task_data_seq = std::make_shared<ppc::core::TaskData>();
+  auto task_data_seq = std::make_shared<ppc::core::TaskData>();
   task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_data.data()));
   task_data_seq->inputs_count.emplace_back(input_data.size());
   task_data_seq->outputs.emplace_back(reinterpret_cast<uint8_t*>(&actual_max));

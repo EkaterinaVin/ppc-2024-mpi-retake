@@ -5,7 +5,6 @@
 #include <boost/mpi/communicator.hpp>
 #include <cstdint>
 #include <limits>
-#include <memory>
 #include <utility>
 #include <vector>
 
