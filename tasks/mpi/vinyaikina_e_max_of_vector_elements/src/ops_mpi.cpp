@@ -6,6 +6,7 @@
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/collectives/broadcast.hpp>
 #include <boost/mpi/collectives/scatter.hpp>
+#include <boost/serialization/vector.hpp>  //NOLINT
 #include <cmath>
 #include <cstdint>
 #include <limits>
