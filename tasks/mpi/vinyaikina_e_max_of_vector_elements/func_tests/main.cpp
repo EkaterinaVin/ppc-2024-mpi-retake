@@ -17,7 +17,6 @@ namespace {
 void RunParallelAndSequentialTasks(std::vector<int32_t>& input_vector, int32_t expected_max) {
   boost::mpi::communicator world;
   int32_t result_parallel = std::numeric_limits<int32_t>::min();
-  int32_t result_sequential = std::numeric_limits<int32_t>::min();
 
   auto task_data_par = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
