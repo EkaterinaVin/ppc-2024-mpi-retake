@@ -47,7 +47,7 @@ void RunParallelAndSequentialTasks(std::vector<int32_t>& input_vector, int32_t e
     test_mpi_task_sequential.PostProcessingImpl();
 
     ASSERT_EQ(result_sequential, result_parallel);
-    ASSERT_EQ(result_sequential, expected_max);
+    ASSERT_EQ(result_parallel, expected_max);
   }
 }
 }  // namespace

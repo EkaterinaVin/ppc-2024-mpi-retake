@@ -40,7 +40,7 @@ bool vinyaikina_e_max_of_vector_elements::VectorMaxSeq::RunImpl() {
   if (input_.empty()) {
     return true;
   }
-  max_ = input_[0];
+  max_ = -100000;
   for (int32_t num : input_) {
     max_ = std::max(num, max_);
     return true;
