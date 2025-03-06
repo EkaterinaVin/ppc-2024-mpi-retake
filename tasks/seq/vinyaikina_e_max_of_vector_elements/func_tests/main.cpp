@@ -3,7 +3,6 @@
 
 #include <algorithm>
 #include <cstdint>
-#include <iostream>
 #include <limits>
 #include <memory>
 #include <random>
@@ -94,7 +93,7 @@ TEST(vinyaikina_e_max_of_vector_elements, randomVector) {
   std::uniform_int_distribution<> distrib(-1000, 1000);
 
   std::vector<int32_t> input_vector(50000);
-  std::generate(input_vector.begin(), input_vector.end(), [&]() { return distrib(gen); });
+  std::ranges::generate(input_vector.begin(), input_vector.end(), [&]() { return distrib(gen); });
 
   int32_t expected_max = *std::ranges::max_element(input_vector.begin(), input_vector.end());
 

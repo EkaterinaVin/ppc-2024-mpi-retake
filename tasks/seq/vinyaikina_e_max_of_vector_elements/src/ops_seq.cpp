@@ -2,8 +2,6 @@
 
 #include <algorithm>
 #include <cstdint>
-#include <limits>
-#include <memory>
 
 bool vinyaikina_e_max_of_vector_elements_seq::VectorMaxSeq::ValidationImpl() {
   return !task_data->outputs.empty() && task_data->outputs_count[0] == 1;

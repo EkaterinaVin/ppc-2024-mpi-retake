@@ -2,10 +2,12 @@
 #include "mpi/vinyaikina_e_max_of_vector_elements/include/ops_mpi.hpp"
 
 #include <algorithm>
-#include <boost/mpi.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/collectives/broadcast.hpp>
-#include <boost/mpi/collectives/scatter.hpp>
+#include <boost/mpi/collectives/reduce.hpp>
+#include <boost/mpi/collectives/scatterv.hpp>
+#include <boost/mpi/operations.hpp>
+#include <boost/mpi/operations/maximum.hpp>
 #include <boost/serialization/vector.hpp>  //NOLINT
 #include <cmath>
 #include <cstdint>

@@ -1,10 +1,9 @@
 
 #include <gtest/gtest.h>
 
-#include <boost/mpi.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <boost/mpi/timer.hpp>
 #include <boost/serialization/vector.hpp>  //NOLINT
-#include <chrono>
 #include <cstdint>
 #include <limits>
 #include <memory>
