@@ -6,8 +6,6 @@
 #include <boost/mpi/collectives/broadcast.hpp>
 #include <boost/mpi/collectives/reduce.hpp>
 #include <boost/mpi/collectives/scatterv.hpp>
-#include <boost/mpi/operations.hpp>
-#include <boost/mpi/operations/maximum.hpp>
 #include <boost/serialization/vector.hpp>  //NOLINT
 #include <cmath>
 #include <cstdint>
@@ -15,10 +13,10 @@
 #include <random>
 #include <vector>
 
-std::vector<int32_t> vinyaikina_e_max_of_vector_elements::MakeRandomVector(int32_t size, int32_t val_min,
-                                                                           int32_t val_max) {
+static std::vector<int32_t> vinyaikina_e_max_of_vector_elements::MakeRandomVector(int32_t size, int32_t val_min,
+                                                                                  int32_t val_max) {
   std::random_device rd;
-  std::mt19937 gen(rd());
+  std::mt19937 gen(static_cast<int>(rd()));
   std::uniform_int_distribution<> distrib(val_min, val_max);
 
   std::vector<int32_t> new_vector(size);

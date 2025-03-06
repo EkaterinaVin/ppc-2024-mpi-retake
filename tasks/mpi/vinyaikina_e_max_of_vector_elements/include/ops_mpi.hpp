@@ -13,7 +13,7 @@
 
 namespace vinyaikina_e_max_of_vector_elements {
 
-[[nodiscard]] std::vector<int32_t> MakeRandomVector(int32_t size, int32_t val_min, int32_t val_max);
+[[nodiscard]] static std::vector<int32_t> MakeRandomVector(int32_t size, int32_t val_min, int32_t val_max);
 
 class VectorMaxSeq : public ppc::core::Task {
  public:
