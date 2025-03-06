@@ -11,6 +11,7 @@
 
 #include "core/perf/include/perf.hpp"
 #include "core/task/include/task.hpp"
+#include "mpi/vinyaikina_e_max_of_vector_elements/include/ops_mpi.hpp"
 
 TEST(vinyaikina_e_max_of_vector_elements_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
@@ -61,7 +62,7 @@ TEST(vinyaikina_e_max_of_vector_elements_mpi, test_task_run) {
     task_data_par->outputs_count.emplace_back(1);
   }
 
-  auto test_mpi_task_parallel = std::make_shared<vinyaikina_e_max_of_vector_elements_mpi::VectorMaxPar>(task_data_par);
+  auto test_mpi_task_parallel = std::make_shared<vinyaikina_e_max_of_vector_elements::VectorMaxPar>(task_data_par);
 
   auto perf_attr = std::make_shared<ppc::core::PerfAttr>();
   perf_attr->num_running = 10;
@@ -70,7 +71,7 @@ TEST(vinyaikina_e_max_of_vector_elements_mpi, test_task_run) {
   auto perf_results = std::make_shared<ppc::core::PerfResults>();
   auto perf_analyzer = std::make_shared<ppc::core::Perf>(test_mpi_task_parallel);
 
-  perf_analyzer->task_run(perf_attr, perf_results);
+  perf_analyzer->TaskRun(perf_attr, perf_results);
 
   if (world.rank() == 0) {
     ppc::core::Perf::PrintPerfStatistic(perf_results);

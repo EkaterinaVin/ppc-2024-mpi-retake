@@ -2,15 +2,14 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
-#include <chrono>
-#include <cstddef>
 #include <cstdint>
+#include <iostream>
 #include <limits>
 #include <memory>
+#include <random>
 #include <vector>
 
 #include "core/task/include/task.hpp"
-#include "core/util/include/util.hpp"
 #include "seq/vinyaikina_e_max_of_vector_elements/include/ops_seq.hpp"
 
 TEST(vinyaikina_e_max_of_vector_elements, regularVector) {
