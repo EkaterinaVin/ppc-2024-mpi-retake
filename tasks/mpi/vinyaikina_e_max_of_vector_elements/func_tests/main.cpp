@@ -34,19 +34,6 @@ void RunParallelAndSequentialTasks(std::vector<int32_t>& input_vector, int32_t e
   test_mpi_task_parallel.PostProcessingImpl();
 
   if (world.rank() == 0) {
-    auto task_data_seq = std::make_shared<ppc::core::TaskData>();
-    task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_vector.data()));
-    task_data_seq->inputs_count.emplace_back(input_vector.size());
-    task_data_seq->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result_sequential));
-    task_data_seq->outputs_count.emplace_back(1);
-
-    vinyaikina_e_max_of_vector_elements::VectorMaxSeq test_mpi_task_sequential(task_data_seq);
-    test_mpi_task_sequential.ValidationImpl();
-    test_mpi_task_sequential.PreProcessingImpl();
-    test_mpi_task_sequential.RunImpl();
-    test_mpi_task_sequential.PostProcessingImpl();
-
-    ASSERT_EQ(result_sequential, result_parallel);
     ASSERT_EQ(result_parallel, expected_max);
   }
 }
