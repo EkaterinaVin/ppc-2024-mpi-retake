@@ -13,8 +13,9 @@
 #include <random>
 #include <vector>
 
-static std::vector<int32_t> vinyaikina_e_max_of_vector_elements::MakeRandomVector(int32_t size, int32_t val_min,
-                                                                                  int32_t val_max) {
+namespace {
+std::vector<int32_t> vinyaikina_e_max_of_vector_elements::MakeRandomVector(int32_t size, int32_t val_min,
+                                                                           int32_t val_max) {
   std::random_device rd;
   std::mt19937 gen(static_cast<int>(rd()));
   std::uniform_int_distribution<> distrib(val_min, val_max);
@@ -23,6 +24,7 @@ static std::vector<int32_t> vinyaikina_e_max_of_vector_elements::MakeRandomVecto
   std::ranges::generate(new_vector.begin(), new_vector.end(), [&]() { return distrib(gen); });
   return new_vector;
 }
+}  // namespace
 
 // Sequential Version
 bool vinyaikina_e_max_of_vector_elements::VectorMaxSeq::ValidationImpl() {
