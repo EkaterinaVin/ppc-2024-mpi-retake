@@ -42,7 +42,7 @@ TEST(vinyaikina_e_max_of_vector_elements, randomVector50000) {
   std::vector<int32_t> input_vector;
 
   if (world.rank() == 0) {
-    input_vector = vinyaikina_e_max_of_vector_elements::MakeRandomVector(50000, -500, 5000);
+    input_vector = MakeRandomVector(50000, -500, 5000);
   }
 
   boost::mpi::broadcast(world, input_vector, 0);
