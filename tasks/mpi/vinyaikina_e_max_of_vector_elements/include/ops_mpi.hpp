@@ -10,7 +10,6 @@
 #include <vector>
 
 #include "core/task/include/task.hpp"
-[[nodiscard]] std::vector<int32_t> MakeRandomVector(int32_t size, int32_t val_min, int32_t val_max);
 namespace vinyaikina_e_max_of_vector_elements {
 
 class VectorMaxSeq : public ppc::core::Task {
