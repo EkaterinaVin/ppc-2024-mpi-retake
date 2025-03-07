@@ -13,18 +13,6 @@
 #include <random>
 #include <vector>
 
-namespace {
-std::vector<int32_t> MakeRandomVector(int32_t size, int32_t val_min, int32_t val_max) {
-  std::random_device rd;
-  std::mt19937 gen(static_cast<int>(rd()));
-  std::uniform_int_distribution<> distrib(val_min, val_max);
-
-  std::vector<int32_t> new_vector(size);
-  std::ranges::generate(new_vector.begin(), new_vector.end(), [&]() { return distrib(gen); });
-  return new_vector;
-}
-}  // namespace
-
 // Sequential Version
 bool vinyaikina_e_max_of_vector_elements::VectorMaxSeq::ValidationImpl() {
   return !task_data->outputs.empty() && task_data->outputs_count[0] == 1;
